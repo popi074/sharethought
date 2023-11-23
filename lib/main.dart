@@ -4,6 +4,8 @@ import 'package:sharethought/styles/kcolor.dart';
 import 'package:sharethought/view/auth/login.dart';
 import 'package:sharethought/view/home/home_page.dart';
 
+import 'every_test/addposttest.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Arimo'
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
+      // home: AddPostPageTest(),
       home: HomePage(),
     );
   }

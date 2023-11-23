@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sharethought/styles/kcolor.dart';
+import 'package:sharethought/view/addPost/add_post_page.dart';
 import 'package:sharethought/view/profile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +15,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     Container( child:Center(child:Text("Home"))), 
-    Container( child:Center(child:Text("add post"))), 
+    AddPostPage(), 
     Profile_Page() 
   ];  
   @override

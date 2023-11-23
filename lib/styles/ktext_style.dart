@@ -27,6 +27,13 @@ class ktextStyle {
         fontWeight: FontWeight.w400,
         fontFamily: 'Roboto');
   }
+   static TextStyle font24(Color color) {
+    return TextStyle(
+        color: color,
+        fontSize: 24,
+        fontWeight: FontWeight.w400,
+        fontFamily: 'Roboto');
+  }
   static TextStyle font20(Color color) {
     return TextStyle(
         color: color,

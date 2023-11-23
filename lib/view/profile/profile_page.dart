@@ -42,16 +42,16 @@ class Profile_Page extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          physics: ScrollPhysics(),
+          physics:const ScrollPhysics(),
           child: Column(
             children: [
               topProfileSection(width, context),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  topBottomText(number: "0", text: "post"),
-                  topBottomText(number: "0", text: "followers"),
-                  topBottomText(number: "0", text: "follow"),
+                  numberAndText(number: "0", text: "post"),
+                  numberAndText(number: "0", text: "followers"),
+                  numberAndText(number: "0", text: "follow"),
                 ],
               ),
               PostList(postList: postList, width: width)
@@ -64,7 +64,7 @@ class Profile_Page extends StatelessWidget {
     );
   }
 
-  Column topBottomText({required String number, required String text}) {
+  Column numberAndText({required String number, required String text}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
