@@ -3,6 +3,8 @@ import 'package:sharethought/styles/kcolor.dart';
 import 'package:sharethought/view/addPost/add_post_page.dart';
 import 'package:sharethought/view/profile/profile_page.dart';
 
+import '../feed/feed_page.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -14,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   int currenIndex = 0 ;
 
   final List<Widget> _pages = [
-    Container( child:Center(child:Text("Home"))), 
+    FeedPage(), 
     AddPostPage(), 
     Profile_Page() 
   ];  

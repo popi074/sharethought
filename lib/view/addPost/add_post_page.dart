@@ -32,6 +32,7 @@ class _AddPostPageState extends State<AddPostPage> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
+        backgroundColor: Kcolor.white,
         appBar: AppBar(
           elevation: 0.0,
           backgroundColor: Kcolor.white,
@@ -50,12 +51,13 @@ class _AddPostPageState extends State<AddPostPage> {
             )
           ],
         ),
-        body: Padding( 
-          padding: const EdgeInsets.only(left:15,right:15,top:10),
+        body: Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
           child: CustomScrollView(
             slivers: [
               SliverList(
                 delegate: SliverChildListDelegate([
+                  profilePicAndNameRow(),
                   _buildTextField(width, height),
                   const SizedBox(height: 20),
                   kUploadIcon(),
@@ -65,6 +67,17 @@ class _AddPostPageState extends State<AddPostPage> {
             ],
           ),
         ));
+  }
+
+  Widget profilePicAndNameRow() {
+    return ListTile(
+      leading: CircleAvatar(
+          radius: 30.0, child: Image.asset("assets/images/profilepic.png")),
+      title: Text(
+        "Shinna",
+        style: ktextStyle.font20(Kcolor.baseBlack),
+      ),
+    );
   }
 
   Widget kUploadIcon() {
@@ -110,10 +123,7 @@ class _AddPostPageState extends State<AddPostPage> {
       child: TextField(
         decoration: InputDecoration(
           hintStyle: ktextStyle.font24(Kcolor.grey),
-          border: OutlineInputBorder(
-           
-            borderSide: BorderSide.none
-          ),
+          border: OutlineInputBorder(borderSide: BorderSide.none),
           hintText: "Whats on your mind?",
         ),
         maxLines: null,

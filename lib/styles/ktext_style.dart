@@ -7,7 +7,8 @@ class ktextStyle {
         color: color,
         fontSize: 35,
         fontWeight: FontWeight.w400,
-        fontFamily: 'Arimo');
+        // fontFamily: 'ComicNeue');
+        fontFamily: 'assets/fonts/ComicNeue-Regular.ttf');
   }
 
 
@@ -17,7 +18,7 @@ class ktextStyle {
         color: color,
         fontSize: 25,
         fontWeight: FontWeight.w400,
-        fontFamily: 'Arimo');
+        fontFamily: 'ComicNeue');
   }
 
   static TextStyle font18(Color color) {
@@ -25,21 +26,21 @@ class ktextStyle {
         color: color,
         fontSize: 18,
         fontWeight: FontWeight.w400,
-        fontFamily: 'Roboto');
+        fontFamily: 'ComicNeue');
   }
    static TextStyle font24(Color color) {
     return TextStyle(
         color: color,
         fontSize: 24,
         fontWeight: FontWeight.w400,
-        fontFamily: 'Roboto');
+      fontFamily: 'ComicNeue');
   }
   static TextStyle font20(Color color) {
     return TextStyle(
         color: color,
         fontSize: 20,
         fontWeight: FontWeight.w400,
-        fontFamily: 'Roboto');
+       fontFamily: 'ComicNeue');
   }
 
   static TextStyle title(Color color) {
@@ -47,7 +48,7 @@ class ktextStyle {
         color: color,
         fontSize: 25,
         fontWeight: FontWeight.w700,
-        fontFamily: 'Roboto');
+        fontFamily: 'ComicNeue');
   }
 
   static TextStyle smallText(Color color) {
@@ -55,7 +56,7 @@ class ktextStyle {
         color: color,
         fontSize: 16,
         fontWeight: FontWeight.w500,
-        fontFamily: 'Arimo');
+       fontFamily: 'ComicNeue');
   }
 
   static TextStyle mediumText(Color color) {
@@ -63,6 +64,6 @@ class ktextStyle {
         color: color,
         fontSize: 20,
         fontWeight: FontWeight.w500,
-        fontFamily: 'Arimo');
+        fontFamily: 'ComicNeue');
   }
 }

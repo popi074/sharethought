@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
-import '../styles/kcolor.dart';
+import '../../styles/kcolor.dart';
 
-class KInputField extends StatelessWidget {
-  final bool isObscure; 
+
+
+class UserNameInputField extends StatelessWidget {
+
   final TextEditingController controller; 
   final String hintText; 
   final Icon icon; 
   final ValueChanged<String>? onChange; 
-  const KInputField({
-    super.key, required this.hintText, required this.icon, required this.controller,  this.isObscure  = false, this.onChange,
+  final String?Function(String?)? validator;
+  const UserNameInputField({
+    super.key, required this.hintText, required this.icon, required this.controller,   this.onChange, required this.validator,
   });
 
   @override
@@ -27,20 +30,10 @@ class KInputField extends StatelessWidget {
               width: MediaQuery.of(context).size.width * .8,
               child: TextFormField(
                 onChanged:onChange,
-                obscureText: isObscure,
                 controller: controller,
-                validator: (value){
-                  if(value == null || value.isEmpty){
-                    if(isObscure){
-                      return "Please you password";
-                    }else{
-                       return "please enter username";
-                    }
-                  }
-                  return null;
-                },
+                validator: validator,
                 decoration: InputDecoration(
-                    border: const UnderlineInputBorder(
+                    border:  UnderlineInputBorder(
                       borderSide: BorderSide(color: Kcolor.baseGrey)
                         ),
                     fillColor: Kcolor.white,
