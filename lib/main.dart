@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharethought/route/route_generator.dart';
+import 'package:sharethought/services/navigator_service.dart';
 import 'package:sharethought/styles/kcolor.dart';
-import 'package:sharethought/view/auth/login.dart';
-import 'package:sharethought/view/auth/signup.dart';
+import 'package:sharethought/view/auth/login/login.dart';
+import 'package:sharethought/view/auth/signup/signup.dart';
 import 'package:sharethought/view/home/home_page.dart';
 import 'package:firebase_core/firebase_core.dart'; 
 
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: Kcolor.white,
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
+      navigatorKey: NavigatorService.navigatorKey,
       // home: AddPostPageTest(),
       home: SignUp(),
     );

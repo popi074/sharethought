@@ -9,11 +9,11 @@ import 'package:sharethought/styles/kcolor.dart';
 import 'package:sharethought/styles/ksize.dart';
 import 'package:sharethought/styles/ktext_style.dart';
 
-import '../../common_widget/kinput_field.dart';
-import '../../common_widget/ksmall_button.dart';
-import '../../constants/value_constant.dart';
-import '../../core/controllers/signup_controller.dart';
-import '../../core/network/database_constant.dart';
+import '../../../common_widget/kinput_field.dart';
+import '../../../common_widget/ksmall_button.dart';
+import '../../../constants/value_constant.dart';
+import '../../../core/controllers/auth/signup_controller.dart';
+import '../../../core/network/database_constant.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -26,7 +26,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
   final TextEditingController usernameCon = TextEditingController();
   final TextEditingController passwordCon = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-   bool isSetUserNmae = false; 
+  bool isSetUserNmae = false;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * .6;
@@ -71,13 +71,15 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                     Consumer(builder: (context, ref, _) {
                       final signupProvider =
                           ref.watch(signUpControllerProvider);
-                        final isSetUsername =   ref.watch(usernameAvailabilityProvider); 
+                      final isSetUsername =
+                          ref.watch(usernameAvailabilityProvider);
 
                       return FullWidthButton(
-                          text: "Sign Up",
-                          onTap: () async {
+                          text: signupProvider is LoadingState
+                              ? "Loading..."
+                              : "Sign Up",
+                          onTap: ()  {
                             if ((formKey.currentState?.validate() ?? false)) {
-                              final getMessage = await isSetUsername;
                               // if(getMessage == ValueConstant.usernameAvailable)
                               ref
                                   .read(signUpControllerProvider.notifier)
@@ -110,39 +112,47 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
             )));
   }
 
-  Column userNameInputMehtod(WidgetRef ref, AsyncValue<String> usernameAvailability) {
+  Column userNameInputMehtod(
+      WidgetRef ref, AsyncValue<String> usernameAvailability) {
     return Column(
-                      children: [
-                        UserNameInputField(
-                            hintText: "Username",
-                            icon: Icon(Icons.person_outline_outlined),
-                            controller: usernameCon,
-                            onChange: (value) async {
-                              // Check username availability in real-time
-                              if (value.isNotEmpty) {
-                                Future.delayed(Duration(microseconds: 1000),
-                                    () {
-                                  ref.read(usernameControllerProvider).text =
-                                      value;
-                                  ref.refresh(usernameAvailabilityProvider);
-                                  print(
-                                      'Current username: ${usernameCon.text}');
-                                });
-                              }
-                            },
-                            validator: userNameValidator),
-                        usernameAvailability.when(
-                          data: (text) {
-                            return Padding(  
-                              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * .094,),
-                              child: Align(alignment:Alignment.centerLeft,child: Text(text ?? '' , style: TextStyle(color: text == ValueConstant.usernameAvailable?Kcolor.stickerColor: Kcolor.errorRedText),)));
-                          },
-                          loading: () => const Text("checking..."),
-                          error: (error, stackTrace) =>
-                              Text('Error checking username availability'),
-                        )
-                      ],
-                    );
+      children: [
+        UserNameInputField(
+            hintText: "Username",
+            icon: Icon(Icons.person_outline_outlined),
+            controller: usernameCon,
+            onChange: (value) async {
+              // Check username availability in real-time
+              if (value.isNotEmpty) {
+                Future.delayed(Duration(microseconds: 1000), () {
+                  ref.read(usernameControllerProvider).text = value;
+                  ref.refresh(usernameAvailabilityProvider);
+                  print('Current username: ${usernameCon.text}');
+                });
+              }
+            },
+            validator: userNameValidator),
+        usernameAvailability.when(
+          data: (text) {
+            return Padding(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * .094,
+                ),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      text ?? '',
+                      style: TextStyle(
+                          color: text == ValueConstant.usernameAvailable
+                              ? Kcolor.stickerColor
+                              : Kcolor.errorRedText),
+                    )));
+          },
+          loading: () => const Text("checking..."),
+          error: (error, stackTrace) =>
+              Text('Error checking username availability'),
+        )
+      ],
+    );
   }
 
   isUsernameAvailable(value) async {
@@ -154,7 +164,6 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
       userNameValidator(value, isValid: true);
     });
   }
-
 
   String? userNameValidator(String? value, {bool? isValid = false}) {
     if (isValid == true) {

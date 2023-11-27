@@ -46,6 +46,7 @@ dependencies:
   firebase_core: ^2.23.0
   connectivity_plus: ^5.0.2
   uuid: ^4.1.0
+  nb_utils: ^6.0.7
   
   
 
