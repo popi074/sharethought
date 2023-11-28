@@ -32,21 +32,23 @@ class LoginController extends StateNotifier<BaseState> {
         if (querySnapshot.docs.isNotEmpty) {
           DocumentSnapshot documentSnapshot = querySnapshot.docs[0];
           Map<String, dynamic> userData =
-          documentSnapshot.data() as Map<String, dynamic>;
+              documentSnapshot.data() as Map<String, dynamic>;
           String storedUsername = userData[DatabaseConst.username];
           String storedPassword = userData[DatabaseConst.password];
-          String uid = userData[DatabaseConst.password];
+          String uid = userData[DatabaseConst.userId];
           print(storedPassword);
           print("========");
           if (userData[DatabaseConst.password] == password) {
-            state = LoginSuccessState(UserModel.formSnap(querySnapshot.docs[0]));
             print("usermodel text");
             // print(UserModel.formSnap(userData[0]));
             toast("Login Successfull!");
-             await SharedPrefData().setToken(uid);
-             NavigatorService.navigateToRouteName(RouteGenerator.home);
-          }else{
-             toast("Plesase Enter Correct Password");
+            await SharedPrefData().setUserId(uid);
+
+            state =
+                LoginSuccessState(UserModel.formSnap(querySnapshot.docs[0]));
+            NavigatorService.navigateToRouteName(RouteGenerator.home);
+          } else {
+            toast("Plesase Enter Correct Password");
           }
         } else {
           toast("Plesase Enter Correct Username");
@@ -58,6 +60,33 @@ class LoginController extends StateNotifier<BaseState> {
     } else {
       state = ErrorState();
       toast("No Internet Connection!");
+    }
+  }
+
+  Future<UserModel?> getUserData() async {
+    try {
+      if (await isNetworkAvabilable()) {
+        final userid = await SharedPrefData().getUserId();
+        print("user id is $userid");
+        if (userid.isNotEmpty) {
+          print(userid);
+        }
+        FirebaseFirestore _firestore = FirebaseFirestore.instance;
+        QuerySnapshot querySnapshot = await _firestore
+            .collection(DatabaseConst.users)
+            .where(DatabaseConst.userId, isEqualTo: userid)
+            .limit(1)
+            .get();
+        UserModel usermodel = UserModel.formSnap(querySnapshot.docs[0]);
+        return usermodel;
+      } else {
+       
+        toast("Something Went Wrong");
+         return null;
+      }
+    } catch (e) {
+      toast("Something Went Wrong");
+      throw e;
     }
   }
 }

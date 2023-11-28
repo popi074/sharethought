@@ -8,9 +8,9 @@ class UserModel {
   String? photourl;
   String? bio;
   bool? isActive;
-  String uid;
-  List followers;
-  List following;
+  String? uid;
+  List? followers;
+  List? following;
   DateTime? createdAt;
   UserModel(this.uid,this.username,this.isActive,this.photourl,this.bio,this.followers,this.following,this.createdAt);
 

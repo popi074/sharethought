@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sharethought/styles/kcolor.dart';
-import 'package:sharethought/view/addPost/add_post_page.dart';
+import 'package:sharethought/view/createPost/create_post_page.dart';
 import 'package:sharethought/view/profile/profile_page.dart';
 
 import '../feed/feed_page.dart';
@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     FeedPage(), 
-    AddPostPage(), 
+    CreatePostPage(), 
     Profile_Page() 
   ];  
   @override

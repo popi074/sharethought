@@ -3,19 +3,23 @@ import 'dart:io';
 import 'package:flutter/Material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sharethought/core/controllers/create_post/create_post_controller.dart';
 import 'package:sharethought/styles/kcolor.dart';
 import 'package:sharethought/styles/ktext_style.dart';
 
-class AddPostPage extends StatefulWidget {
-  const AddPostPage({Key? key}) : super(key: key);
+class CreatePostPage extends StatefulWidget {
+  const CreatePostPage({Key? key}) : super(key: key);
 
   @override
-  State<AddPostPage> createState() => _AddPostPageState();
+  State<CreatePostPage> createState() => _CreatePostPageState();
 }
 
-class _AddPostPageState extends State<AddPostPage> {
+class _CreatePostPageState extends State<CreatePostPage> {
+
+  TextEditingController postTextCon = TextEditingController(); 
   List<XFile> _selectedImages = [];
 
   Future<void> pickImage() async {
@@ -28,45 +32,59 @@ class _AddPostPageState extends State<AddPostPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    postTextCon.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    return Scaffold(
-        backgroundColor: Kcolor.white,
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Kcolor.white,
-          foregroundColor: Kcolor.baseBlack,
-          title: Text(
-            "Create Post",
-            style: ktextStyle.font18(Kcolor.black),
-          ),
-          actions: [
-            TextButton(
-              child: Text(
-                "post",
-                style: ktextStyle.font20(Kcolor.black),
+    return Consumer(
+      builder: (context, ref,_) {
+        final postProvider = ref.watch(createPostProvider);
+        return Scaffold(
+            backgroundColor: Kcolor.white,
+            appBar: AppBar(
+              elevation: 0.0,
+              backgroundColor: Kcolor.white,
+              foregroundColor: Kcolor.baseBlack,
+              title: Text(
+                "Create Post",
+                style: ktextStyle.font18(Kcolor.black),
               ),
-              onPressed: () {},
-            )
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-          child: CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  profilePicAndNameRow(),
-                  _buildTextField(width, height),
-                  const SizedBox(height: 20),
-                  kUploadIcon(),
-                ]),
+              actions: [
+                TextButton(
+                  child: Text(
+                    "post",
+                    style: ktextStyle.font20(Kcolor.black),
+                  ),
+                  onPressed: () {
+                    ref.read(createPostProvider.notifier).createNewPost("post", _selectedImages,postTextCon.text );
+                  },
+                )
+              ],
+            ),
+            body: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      profilePicAndNameRow(),
+                      _buildTextField(width, height),
+                      const SizedBox(height: 20),
+                      kUploadIcon(),
+                    ]),
+                  ),
+                  imgeGridViewList()
+                ],
               ),
-              imgeGridViewList()
-            ],
-          ),
-        ));
+            ));
+      }
+    );
   }
 
   Widget profilePicAndNameRow() {
@@ -121,6 +139,7 @@ class _AddPostPageState extends State<AddPostPage> {
     return Container(
       width: width, // Set the width of the TextField container
       child: TextField(
+        controller: postTextCon,
         decoration: InputDecoration(
           hintStyle: ktextStyle.font24(Kcolor.grey),
           border: OutlineInputBorder(borderSide: BorderSide.none),
