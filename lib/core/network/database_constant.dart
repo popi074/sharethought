@@ -13,6 +13,9 @@ class DatabaseConst{
   static const following = "following"; 
   static const photourl = "photourl"; 
   static const bio = "bio"; 
+  static const networkError = "Please check your internet connectionn!"; 
+  static const wrong = "Something went wrong!"; 
+  
 
   // post const 
 
@@ -20,13 +23,22 @@ class DatabaseConst{
   static const photoUrlList = "photoUrlList";
   static const photoUrl = "photoUrl";
   static const commentText = "commentText";
+  static const commentCount = "commentcount";
+  static const profileFolder = "userprofile";
+
+  
   static const postText = "postText";
+  static const authUserId = "authUserId";
 
   static const postCollection = "posts";
+  static const commentCollection = "commentCollection";
   static const proImgae = "proImgae";
   static const postId = "postId";
   static const likes = "likes";
   static const description = "description";
+  static const isLoggedIn = "isloggedin";
+
+  
 
 
 

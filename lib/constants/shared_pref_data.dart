@@ -30,10 +30,18 @@ class SharedPrefData {
   //     pref.getString(token);
   //   } );
   // }
+  Future<void> removeDataFromSharedPreferences(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove(key);
+}
 
   Future<bool> setString(String value, String key) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString(key, value);
+  }
+   setBool(String key, bool booleanValue) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(key, booleanValue);
   }
 
   Future<String> getString(String key) async {

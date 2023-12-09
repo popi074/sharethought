@@ -11,6 +11,27 @@ class ktextStyle {
         fontFamily: 'assets/fonts/ComicNeue-Regular.ttf');
   }
 
+    static TextStyle buttonText20(Color color) {
+    return TextStyle(
+        color: color,
+        fontSize:20 ,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1,
+        // fontFamily: 'ComicNeue');
+        fontFamily: 'assets/fonts/Roboto-bold.ttf');
+  }
+
+  static TextStyle buttonText24(Color color) {
+    return TextStyle(
+        color: color,
+        fontSize:24 ,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 2,
+        // fontFamily: 'ComicNeue');
+        fontFamily: 'assets/fonts/Roboto-bold.ttf');
+  }
+
+
 
 
   static TextStyle subtitle(Color color) {

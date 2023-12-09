@@ -1,36 +1,64 @@
 import 'package:flutter/Material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sharethought/core/controllers/auth/model/usermodel.dart';
+import 'package:sharethought/core/controllers/comment/comment_service.dart';
 
+import '../../common_widget/get_time.dart';
+import '../../core/controllers/guest/guest_controller.dart';
+import '../../model/post_model.dart';
+import '../../route/argument_model_classes.dart';
+import '../../route/route_generator.dart';
+import '../../services/navigator_service.dart';
 import '../../styles/kcolor.dart';
 import '../../styles/ktext_style.dart';
 
 class PostCard extends StatelessWidget {
-  final List<Map<String,String>> postList;
+  final PostModel postModelData;
   final int index;
+  final UserModel userData;
+  final bool isProfilePage; 
   const PostCard({
-    super.key, required this.postList, required this.index,
-   
+    super.key,
+    required this.postModelData,
+    required this.index,
+    required this.userData,
+    this.isProfilePage = false
   });
-
- 
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width; 
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            leading: CircleAvatar(
-                radius: 30.0,
-                child: Image.asset("assets/images/profilepic.png")),
+            leading: Consumer(
+              builder: (context,ref,_) {
+                return InkWell(
+                  onTap: (){
+                    if(!isProfilePage){
+                       ref.read(guestProvider.notifier).getGeustData(postModelData.userId);
+                      NavigatorService.navigateToRouteName(RouteGenerator.guestProfile);
+                    }
+                  },
+                  child: CircleAvatar(
+                      radius: 30.0,
+                      child: Image.asset("assets/images/profilepic.png")),
+                );
+              }
+            ),
+
+            // user name
             title: Text(
-              "Shinna",
+              postModelData.userName,
               style: ktextStyle.font20(Kcolor.baseBlack),
             ),
             subtitle: Text(
-              "1 dec 2023",
+              formatDateTime(postModelData.publisDate),
               style: ktextStyle.font18(Kcolor.blackbg),
             ),
             trailing: IconButton(
@@ -63,12 +91,12 @@ class PostCard extends StatelessWidget {
             ),
           ),
           // text
-          if (postList[index]['text'] != null &&
-              postList[index]['text']!.isNotEmpty) ...{
+          if (postModelData.description != null &&
+              postModelData.description!.isNotEmpty) ...{
             Padding(
-              padding: EdgeInsets.only(left: 15, right: 15),
+              padding: EdgeInsets.only(left: width * .1, right: width *.05),
               child: Text(
-                postList[index]['text']!,
+                postModelData.description!,
                 style: ktextStyle.font18(Kcolor.black),
               ),
             )
@@ -76,15 +104,15 @@ class PostCard extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          Image.asset(
-            "assets/images/error-image.png",
-            width:width,
-            // fit: BoxFit.fitWidth,
-            
-            height: MediaQuery.of(context).size.height * .4,
-          ),
+          // Image.asset(
+          //   "assets/images/error-image.png",
+          //   width:width,
+          //   // fit: BoxFit.fitWidth,
 
-          Divider(color: Kcolor.baseGrey),
+          //   height: MediaQuery.of(context).size.height * .4,
+          // ),
+
+          const Divider(color: Kcolor.baseGrey),
           const Divider(
             color: Kcolor.baseBlack,
             indent: 20,
@@ -96,21 +124,26 @@ class PostCard extends StatelessWidget {
               // Spacing between items
               // runSpacing: 8.0, // Spacing between lines
               children: [
-                const Icon(
-                  Icons.favorite_outline_outlined,
+                IconButton(onPressed: ()async{
+                     await CommentService().likePost(postModelData, userData.uid);
+                }, icon: Icon(
+                  postModelData.likes!.contains(userData.uid)
+                      ? Icons.favorite
+                      : Icons.favorite_outline_outlined,
                   size: 30,
-                ),
-                Text('20'),
-                SizedBox(width: 20),
+                )),
+                Text(postModelData.likes!.length.toString()),
+               const SizedBox(width: 20),
                 InkWell(
                   onTap: () {
-                    Navigator.of(context).pushNamed("/commentsection");
+                    Navigator.of(context)
+                        .pushNamed("/commentsection", arguments: CommentSectionArguments(postModel: postModelData,userData: userData));
                   },
                   // child: Icon(Icons.comment_outlined, size: 30,)
                   child: Image.asset("assets/images/comment.png",
                       width: 30, height: 30),
                 ),
-                Text('230'),
+                Text(postModelData.commentCount.toString()?? '0'),
               ],
             ),
           ),
@@ -125,4 +158,6 @@ class PostCard extends StatelessWidget {
       ),
     );
   }
+
+  
 }

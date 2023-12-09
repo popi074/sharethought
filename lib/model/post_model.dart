@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sharethought/core/network/database_constant.dart';
+
 class PostModel{
     static List<Map<String, String>> postList = [
     {
@@ -21,5 +24,32 @@ class PostModel{
           "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg"
     },
   ];
+  
+  String description; 
+  String postId; 
+  String userId; 
+  String userName;
+  List photoUrlList;  
+  List? likes;  
+  int commentCount;  
+  DateTime publisDate; 
+  PostModel(this.description, this.postId, this.userId, this.userName, this.photoUrlList,this.likes,this.commentCount,this.publisDate);
+
+
+
+  factory PostModel.formSnap(DocumentSnapshot snap){
+    var snapshot = snap.data() as Map<String,dynamic>; 
+    DateTime date = snapshot[DatabaseConst.date]?.toDate();
+    return PostModel(
+      snapshot[DatabaseConst.description] ?? '',
+      snapshot[DatabaseConst.postId] ?? '',
+      snapshot[DatabaseConst.userId] ?? '',
+      snapshot[DatabaseConst.username] ?? '',
+      snapshot[DatabaseConst.photoUrlList] ?? [],
+      snapshot[DatabaseConst.likes] ?? [],
+      snapshot[DatabaseConst.commentCount] ?? [],
+      date
+      );
+  }
 
 }

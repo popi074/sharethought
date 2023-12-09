@@ -3,24 +3,44 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharethought/constants/shared_pref_data.dart';
 import 'package:sharethought/core/controllers/auth/model/usermodel.dart';
 
+import '../../../core/controllers/auth/login_controller.dart';
 import '../../../core/network/database_constant.dart';
+import '../../../core/network/network_util.dart';
 
 
+Future<UserModel> getAuthUserData() async {
+  try {
+    if (await isNetworkAvabilable()) {
+      //  ref.read(loginProvider.notifier).getUserData();
+      final userId = await SharedPrefData().getUserId();
+      print("user id is $userId");
+      
+      if (userId.isNotEmpty) {
+        print(userId);
+      }
 
-final getUserProvider = FutureProvider<String>((ref)async{
-    // final userid = await SharedPrefData().getUserId();
-    // if(userid.isNotEmpty){
-    //   print(userid);
-    // }
-    // FirebaseFirestore _firestore = FirebaseFirestore.instance; 
-    // QuerySnapshot querySnapshot =  await _firestore.collection(DatabaseConst.users).where(DatabaseConst.userId , isEqualTo: userid).limit(1).get();
-    // DocumentSnapshot documentSnapshot = querySnapshot.docs[0]; 
-    // UserModel userModel = UserModel.formSnap(documentSnapshot); 
-    // print(userModel.username);
-    // print(userModel);
-    // return userModel;
-    return "hi";
-});
+      final firestore = FirebaseFirestore.instance;
+      final querySnapshot = await firestore
+          .collection(DatabaseConst.users)
+          .where(DatabaseConst.userId, isEqualTo: userId)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return UserModel.formSnap(querySnapshot.docs[0]);
+      } else {
+        throw "error"; 
+      }
+    } else {
+      print("No internet connection!");
+      throw "error";
+    }
+  } catch (e) {
+    print("Error fetching user data: $e");
+    throw e ; 
+  }
+}
+
 
 
 

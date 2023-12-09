@@ -28,11 +28,13 @@ class CreatePostController extends StateNotifier<BaseState> {
     List<XFile>? images,
     String text,
   ) async {
-    try {
+    if(await isNetworkAvailable()){
+      try {
+      state= const LoadingState();
       List<String> imageListUrl = [];
       // final String hl = await ref!.read(getUserProvider.future);
       final userdata = await ref!.read(loginProvider.notifier).getUserData();
-
+      
       if (userdata != null) {
         if (images != null) {
           if (images.isNotEmpty) {
@@ -47,14 +49,18 @@ class CreatePostController extends StateNotifier<BaseState> {
               .doc(postId)
               .set({
             DatabaseConst.postId: postId,
+            DatabaseConst.username: userdata.username,
             DatabaseConst.likes: [],
+            DatabaseConst.commentCount: 0,
+            DatabaseConst.date: DateTime.now(), 
             DatabaseConst.description: text,
             DatabaseConst.userId: userdata.uid,
             DatabaseConst.photoUrlList: imageListUrl,
           });
+          toast("Post Created Successfully.");
           state = CreatePostSuccessState("Post Created");
         } else {
-          toast("");
+          toast("Nothing to post!");
           state = CreatePostErrorState("Empty Content");
         }
 
@@ -69,6 +75,16 @@ class CreatePostController extends StateNotifier<BaseState> {
       state = CreatePostErrorState("Something Went Wrong!");
       print("something went wrong $e");
     }
+    }// is network available
+    else{
+      toast("Please Check Your Internet Connection"); 
+      state = CreatePostErrorState("Please Check Your Internet Connection");
+    }
+    
+  }
+
+  resetState(){
+    state = const InitialState();
   }
 
   uploadImage(String folderName, List<XFile> images) async {
@@ -97,4 +113,6 @@ class CreatePostController extends StateNotifier<BaseState> {
       print("upload image to firebase storage error on $e");
     }
   }
+
+  
 }

@@ -6,9 +6,12 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:sharethought/core/base_state/base_state.dart';
 import 'package:sharethought/core/controllers/create_post/create_post_controller.dart';
 import 'package:sharethought/styles/kcolor.dart';
 import 'package:sharethought/styles/ktext_style.dart';
+import 'package:sharethought/view/createPost/state.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({Key? key}) : super(key: key);
@@ -18,8 +21,7 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
-
-  TextEditingController postTextCon = TextEditingController(); 
+  TextEditingController postTextCon = TextEditingController();
   List<XFile> _selectedImages = [];
 
   Future<void> pickImage() async {
@@ -42,49 +44,110 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    return Consumer(
-      builder: (context, ref,_) {
-        final postProvider = ref.watch(createPostProvider);
-        return Scaffold(
+    return Consumer(builder: (context, ref, _) {
+      final postProvider = ref.watch(createPostProvider);
+      if (postProvider is InitialState ||
+          postProvider is CreatePostSuccessState) {
+        _selectedImages.clear();
+        postTextCon.clear();
+      }
+
+      return Scaffold(
+          backgroundColor: Kcolor.white,
+          appBar: AppBar(
+            elevation: 0.0,
             backgroundColor: Kcolor.white,
-            appBar: AppBar(
-              elevation: 0.0,
-              backgroundColor: Kcolor.white,
-              foregroundColor: Kcolor.baseBlack,
-              title: Text(
-                "Create Post",
-                style: ktextStyle.font18(Kcolor.black),
-              ),
-              actions: [
-                TextButton(
-                  child: Text(
-                    "post",
-                    style: ktextStyle.font20(Kcolor.black),
-                  ),
-                  onPressed: () {
-                    ref.read(createPostProvider.notifier).createNewPost("post", _selectedImages,postTextCon.text );
-                  },
-                )
+            foregroundColor: Kcolor.baseBlack,
+            title: Text(
+              "Create Post",
+              style: ktextStyle.font18(Kcolor.black),
+            ),
+            actions: [
+              postButtom(postProvider, ref, () async {
+                print("button pressed");
+                if (postProvider is! LoadingState) {
+                  print("button pressed if");
+                  await ref
+                      .read(createPostProvider.notifier)
+                      .createNewPost("post", _selectedImages, postTextCon.text);
+                }
+                ref.read(createPostProvider.notifier).resetState();
+              })
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+            child: CustomScrollView(
+              slivers: [
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    profilePicAndNameRow(),
+                    _buildTextField(width, height),
+                    const SizedBox(height: 20),
+                    kUploadIcon(),
+                  ]),
+                ),
+                imgeGridViewList()
               ],
             ),
-            body: Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-              child: CustomScrollView(
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      profilePicAndNameRow(),
-                      _buildTextField(width, height),
-                      const SizedBox(height: 20),
-                      kUploadIcon(),
-                    ]),
-                  ),
-                  imgeGridViewList()
-                ],
-              ),
-            ));
-      }
-    );
+          ));
+    });
+  }
+
+  Widget postButtom(
+      BaseState postProvider, WidgetRef ref, VoidCallback onPressed) {
+    // return Container(
+    //     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+    //     decoration: BoxDecoration(
+    //       borderRadius: BorderRadius.circular(2),
+    //       color: const Color.fromARGB(255, 206, 199, 203),
+    //     ),
+    //     child: postProvider is LoadingState
+    //         ? const CircularProgressIndicator()
+    //         : TextButton(
+    //             child: Text(
+    //               "post",
+    //               style: ktextStyle.font20(Kcolor.black),
+    //             ),
+    //             onPressed: () async {
+    //               await ref
+    //                   .read(createPostProvider.notifier)
+    //                   .createNewPost("post", _selectedImages, postTextCon.text);
+    //               ref.read(createPostProvider.notifier).resetState();
+    //             },
+    //           ));
+
+    return TextButton(
+        onPressed: onPressed,
+        child: Container(
+            width: 100,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.blueAccent,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            alignment: Alignment.center,
+            child: (postProvider is LoadingState)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 15,
+                        height: 15,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Kcolor.white),
+                        ),
+                      ),
+                      Text(
+                        "loading",
+                        style: ktextStyle.font18(Kcolor.white),
+                      ),
+                    ],
+                  )
+                : Text("post", style: ktextStyle.buttonText20(Kcolor.white))));
   }
 
   Widget profilePicAndNameRow() {

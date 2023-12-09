@@ -9,11 +9,11 @@ import '../view/home/post_card.dart';
 class PostList extends StatefulWidget {
   const PostList({
     super.key,
-    required this.postList,
+    required this.postDataList,
     required this.width,
   });
 
-  final List<Map<String, String>> postList;
+  final List<PostModel> postDataList;
   final double width;
 
   @override
@@ -24,13 +24,13 @@ class _PostListState extends State<PostList> {
   @override
   Widget build(BuildContext context) {
     print("outoput is");
-    print(widget.postList.length);
+    print(widget.postDataList.length);
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: widget.postList.length,
+      itemCount: widget.postDataList.length,
       itemBuilder: (context, index) {
-        return PostCard(postList: PostModel.postList,index:index);
+        // return PostCard(postModelData:postDataList[index] ,index:index);
       },
     );
   }

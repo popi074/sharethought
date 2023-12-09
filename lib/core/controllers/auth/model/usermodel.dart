@@ -4,15 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../network/database_constant.dart';
 
 class UserModel {
-  String? username;
-  String? photourl;
-  String? bio;
-  bool? isActive;
-  String? uid;
-  List? followers;
-  List? following;
-  DateTime? createdAt;
-  UserModel(this.uid,this.username,this.isActive,this.photourl,this.bio,this.followers,this.following,this.createdAt);
+  String username;
+  String photourl;
+  String bio;
+  bool isActive;
+  String uid;
+  List followers;
+  List following;
+  DateTime createdAt;
+  UserModel(this.uid,this.username,this.isActive ,this.photourl,this.bio,this.followers,this.following,this.createdAt);
 
   Map<String, dynamic> toJson() {
     return {
@@ -29,18 +29,18 @@ class UserModel {
 
   factory UserModel.formSnap(DocumentSnapshot snap) {
     List emptyList = [];
-    print("insie model data");
+    // print("insie model data");
     var snapshot = snap.data()! as Map<String, dynamic>;
-    DateTime? toDateTime = snapshot[DatabaseConst.date]?.toDate();
-    print( "userid : ${snapshot[DatabaseConst.userId]}");
-    print( "usename:  ${snapshot[DatabaseConst.username]}");
-    print( "isActive: ${snapshot[DatabaseConst.isActive]}");
-    print( "photourl: ${snapshot[DatabaseConst.photourl]}");
-    print( "bio: ${snapshot[DatabaseConst.bio]}");
-    print( "followers: ${snapshot[DatabaseConst.followers]}");
-    print( "following: ${snapshot[DatabaseConst.following]}");
-    print( "date : ${snapshot[DatabaseConst.date]}");
-    print("insie model data");
+    DateTime toDateTime = snapshot[DatabaseConst.date]?.toDate();
+    // print( "userid : ${snapshot[DatabaseConst.userId]}");
+    // print( "usename:  ${snapshot[DatabaseConst.username]}");
+    // print( "isActive: ${snapshot[DatabaseConst.isActive]}");
+    // print( "photourl: ${snapshot[DatabaseConst.photourl]}");
+    // print( "bio: ${snapshot[DatabaseConst.bio]}");
+    // print( "followers: ${snapshot[DatabaseConst.followers]}");
+    // print( "following: ${snapshot[DatabaseConst.following]}");
+    // print( "date : ${snapshot[DatabaseConst.date]}");
+    // print("insie model data");
     try{
       return UserModel(
         snapshot[DatabaseConst.userId] ?? '',

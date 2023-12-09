@@ -43,7 +43,8 @@ class LoginController extends StateNotifier<BaseState> {
             // print(UserModel.formSnap(userData[0]));
             toast("Login Successfull!");
             await SharedPrefData().setUserId(uid);
-
+            await SharedPrefData().setBool(DatabaseConst.isLoggedIn, true);
+            
             state =
                 LoginSuccessState(UserModel.formSnap(querySnapshot.docs[0]));
             NavigatorService.navigateToRouteName(RouteGenerator.home);
@@ -62,8 +63,9 @@ class LoginController extends StateNotifier<BaseState> {
       toast("No Internet Connection!");
     }
   }
-
-  Future<UserModel?> getUserData() async {
+  // not using now
+   Future<UserModel?> getUserData() async {
+    state = LoadingState();
     try {
       if (await isNetworkAvabilable()) {
         final userid = await SharedPrefData().getUserId();
@@ -71,22 +73,57 @@ class LoginController extends StateNotifier<BaseState> {
         if (userid.isNotEmpty) {
           print(userid);
         }
-        FirebaseFirestore _firestore = FirebaseFirestore.instance;
-        QuerySnapshot querySnapshot = await _firestore
+        
+        QuerySnapshot querySnapshot = await firestore
             .collection(DatabaseConst.users)
             .where(DatabaseConst.userId, isEqualTo: userid)
             .limit(1)
             .get();
-        UserModel usermodel = UserModel.formSnap(querySnapshot.docs[0]);
+        if(querySnapshot.docs.isNotEmpty){
+         
+            UserModel usermodel = UserModel.formSnap(querySnapshot.docs[0]);
+             state = LoginSuccessState(usermodel);
         return usermodel;
+        }else{
+          state = LoginErrorState("no User Found"); 
+          NavigatorService.navigateToRouteName(RouteGenerator.login); 
+           throw UserNotFoundException("User not found");
+        }
+      
       } else {
        
         toast("Something Went Wrong");
-         return null;
+        //  return null; 
+         throw NetworkErrorException("Network error");
       }
     } catch (e) {
       toast("Something Went Wrong");
-      throw e;
+      //  throw "error";
+      throw AppErrorException("An error occurred");
     }
   }
+
+  logout()async{
+    await SharedPrefData().removeDataFromSharedPreferences(SharedPrefData.USERID);
+    await SharedPrefData().removeDataFromSharedPreferences(DatabaseConst.isLoggedIn);
+    await NavigatorService.navigateToRouteName(RouteGenerator.login);
+  }
+
+
+}
+
+
+class UserNotFoundException implements Exception {
+  final String message;
+  UserNotFoundException(this.message);
+}
+
+class NetworkErrorException implements Exception {
+  final String message;
+  NetworkErrorException(this.message);
+}
+
+class AppErrorException implements Exception {
+  final String message;
+  AppErrorException(this.message);
 }
