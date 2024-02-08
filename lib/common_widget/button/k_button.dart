@@ -24,7 +24,7 @@ class KButton extends StatelessWidget {
         child: Center(
           child: Text(
             '$title',
-            style: ktextStyle.font18(Kcolor.whiteBackground),
+            style: ktextStyle.font18..copyWith(color: Colors.white..withOpacity(.9)),
           ),
         ),
       ),

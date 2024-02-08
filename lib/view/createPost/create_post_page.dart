@@ -13,6 +13,8 @@ import 'package:sharethought/styles/kcolor.dart';
 import 'package:sharethought/styles/ktext_style.dart';
 import 'package:sharethought/view/createPost/state.dart';
 
+import '../../common_widget/loading/loading_text_btn.dart';
+
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({Key? key}) : super(key: key);
 
@@ -27,10 +29,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Future<void> pickImage() async {
     final List<XFile>? result = await ImagePicker().pickMultiImage();
     if (result != null && result.isNotEmpty) {
+      print("result not null ${result}");
       setState(() {
         _selectedImages = result;
       });
     }
+    print(_selectedImages);
   }
 
   @override
@@ -46,10 +50,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
     final height = MediaQuery.of(context).size.height;
     return Consumer(builder: (context, ref, _) {
       final postProvider = ref.watch(createPostProvider);
-      if (postProvider is InitialState ||
-          postProvider is CreatePostSuccessState) {
+      if (postProvider is CreatePostSuccessState) {
         _selectedImages.clear();
         postTextCon.clear();
+        //  ref.read(createPostProvider.notifier).resetState();
       }
 
       return Scaffold(
@@ -60,7 +64,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
             foregroundColor: Kcolor.baseBlack,
             title: Text(
               "Create Post",
-              style: ktextStyle.font18(Kcolor.black),
+              style: ktextStyle.font18
+                ..copyWith(color: Colors.black..withOpacity(.5)),
             ),
             actions: [
               postButtom(postProvider, ref, () async {
@@ -71,7 +76,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       .read(createPostProvider.notifier)
                       .createNewPost("post", _selectedImages, postTextCon.text);
                 }
-                ref.read(createPostProvider.notifier).resetState();
+                if (postProvider is CreatePostSuccessState) {
+                  ref.read(createPostProvider.notifier).resetState();
+                }
               })
             ],
           ),
@@ -120,34 +127,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
     return TextButton(
         onPressed: onPressed,
         child: Container(
-            width: 100,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.blueAccent,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            alignment: Alignment.center,
-            child: (postProvider is LoadingState)
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 15,
-                        height: 15,
-                        child: const CircularProgressIndicator(
-                          strokeWidth: 2.0,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Kcolor.white),
-                        ),
-                      ),
-                      Text(
-                        "loading",
-                        style: ktextStyle.font18(Kcolor.white),
-                      ),
-                    ],
-                  )
-                : Text("post", style: ktextStyle.buttonText20(Kcolor.white))));
+          width: 100,
+          height: 80,
+          decoration: BoxDecoration(
+            color: Kcolor.secondary,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          alignment: Alignment.center,
+          child: (postProvider is LoadingState)
+              ? const LoadingTextBtn()
+              : Text(
+                  "post",
+                  style: ktextStyle.buttonText20.copyWith(color:Colors.white),
+                ),
+        ));
   }
 
   Widget profilePicAndNameRow() {
@@ -156,7 +149,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
           radius: 30.0, child: Image.asset("assets/images/profilepic.png")),
       title: Text(
         "Shinna",
-        style: ktextStyle.font20(Kcolor.baseBlack),
+        style: ktextStyle.font20
+          ..copyWith()
+          ..copyWith(color: Colors.black..withOpacity(.5)),
       ),
     );
   }
@@ -164,13 +159,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget kUploadIcon() {
     return InkWell(
       onTap: () {
+        print("upload pic tapped");
         pickImage();
       },
       child: Row(
         children: [
           Text(
             "upload picture",
-            style: ktextStyle.font18(Kcolor.black),
+            style: ktextStyle.font18..copyWith(color: Colors.black),
           ),
           IconButton(
             icon: const Icon(Icons.upload_file_outlined, size: 20),
@@ -182,6 +178,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   Widget imgeGridViewList() {
+    print("image grid view $_selectedImages");
     return SliverGrid(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -191,6 +188,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       delegate: SliverChildBuilderDelegate(
         childCount: _selectedImages.length,
         (context, index) {
+          print("all the selected image");
+          print(_selectedImages);
           return Image.file(File(_selectedImages[index].path),
               fit: BoxFit.cover);
         },
@@ -204,7 +203,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       child: TextField(
         controller: postTextCon,
         decoration: InputDecoration(
-          hintStyle: ktextStyle.font24(Kcolor.grey),
+          hintStyle: ktextStyle.font24
+            ..copyWith(color: Colors.grey..withOpacity(1)),
           border: OutlineInputBorder(borderSide: BorderSide.none),
           hintText: "Whats on your mind?",
         ),

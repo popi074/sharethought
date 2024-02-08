@@ -38,8 +38,31 @@ class DatabaseConst{
   static const description = "description";
   static const isLoggedIn = "isloggedin";
 
-  
+  // image asset 
+  static const personavater = "assets/images/person.jpg";
 
+  // chating data    
+  static const messageCollection = "messageCollection";
+  static const participents = "participents"; 
+  static const messageText = "messageText"; 
+  static const senderId = "senderId"; 
+  static const messageId = "messageId"; 
+  static const isSeen = "isSeen"; 
+  static const isSent = "isSent"; 
+  static const messageTime = "messageTime"; 
+  static const otherSenderId = "senderId"; 
+  static const userSenderId = "userSenderId"; 
+  static const otherUserId = "otherUserId"; 
+  static const messageReply = "messageReply"; 
+  static const replyTo = "replyTo"; 
+  static const reveiverId = "reveiverId"; 
+  // static const a = "chatuesr2"; 
+
+  static const chatId = "chatId"; 
+  static const chat = "chat"; 
+  static const verificationTimestamp = "emailverifytime"; 
+  static const isEmailVerified = "isemailverified"; 
+  static const verificationCode = "verificatoincode"; 
 
 
 

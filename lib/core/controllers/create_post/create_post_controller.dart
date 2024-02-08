@@ -55,6 +55,7 @@ class CreatePostController extends StateNotifier<BaseState> {
             DatabaseConst.date: DateTime.now(), 
             DatabaseConst.description: text,
             DatabaseConst.userId: userdata.uid,
+            DatabaseConst.photoUrl: userdata.photourl, 
             DatabaseConst.photoUrlList: imageListUrl,
           });
           toast("Post Created Successfully.");

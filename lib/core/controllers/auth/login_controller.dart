@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -10,7 +11,9 @@ import 'package:sharethought/core/network/database_constant.dart';
 import 'package:sharethought/core/network/network_util.dart';
 import 'package:sharethought/route/route_generator.dart';
 import 'package:sharethought/services/navigator_service.dart';
+import 'package:sharethought/view/auth/login/login.dart';
 import 'package:sharethought/view/auth/login/state.dart';
+import 'package:sharethought/view/home/home_page.dart';
 
 final loginProvider = StateNotifierProvider<LoginController, BaseState>(
     (ref) => LoginController(ref: ref));
@@ -21,7 +24,7 @@ class LoginController extends StateNotifier<BaseState> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   Future<void> login(
       {required String username, required String password}) async {
-    state = LoadingState();
+    state =const LoadingState();
     if (await isNetworkAvabilable()) {
       try {
         QuerySnapshot querySnapshot = await firestore
@@ -41,17 +44,25 @@ class LoginController extends StateNotifier<BaseState> {
           if (userData[DatabaseConst.password] == password) {
             print("usermodel text");
             // print(UserModel.formSnap(userData[0]));
-            toast("Login Successfull!");
+           
             await SharedPrefData().setUserId(uid);
             await SharedPrefData().setBool(DatabaseConst.isLoggedIn, true);
             
             state =
                 LoginSuccessState(UserModel.formSnap(querySnapshot.docs[0]));
-            NavigatorService.navigateToRouteName(RouteGenerator.home);
+                 toast("Login Successfull!");
+                 NavigatorService.navigateToReplacement(
+            CupertinoPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+            // NavigatorService.navigateToReplacement(RouteGenerator.home);
           } else {
+            state = LoginErrorState("Password not correct!");
             toast("Plesase Enter Correct Password");
           }
         } else {
+          state = LoginErrorState("Password not correct!");
           toast("Plesase Enter Correct Username");
         }
       } catch (e) {
@@ -106,7 +117,13 @@ class LoginController extends StateNotifier<BaseState> {
   logout()async{
     await SharedPrefData().removeDataFromSharedPreferences(SharedPrefData.USERID);
     await SharedPrefData().removeDataFromSharedPreferences(DatabaseConst.isLoggedIn);
-    await NavigatorService.navigateToRouteName(RouteGenerator.login);
+    state = LogoutSuccessState();
+    // await NavigatorService.navigateToRouteName(RouteGenerator.login);
+     await NavigatorService.navigateAndRemoveUntil(
+    MaterialPageRoute(builder: (context) => Login()), // Replace with your login page route
+  );
+  
+    
   }
 
 

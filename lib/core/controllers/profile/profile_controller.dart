@@ -24,27 +24,28 @@ final profileStreamProvider =
   });
 });
 
-final createPostProvider =
-    StateNotifierProvider<CreatePostController, BaseState>((ref) {
-  return CreatePostController(ref: ref);
+final profileProvider =
+    StateNotifierProvider<ProfileController, BaseState>((ref) {
+  return ProfileController(ref: ref);
 });
 
-class CreatePostController extends StateNotifier<BaseState> {
+class ProfileController extends StateNotifier<BaseState> {
   final Ref? ref;
-  CreatePostController({this.ref}) : super(const InitialState());
+  ProfileController({this.ref}) : super(const InitialState());
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   updateProfile(
-    XFile? image,
     String userId,
-    
+    String oldProfile,
   ) async {
+
+    final XFile? image = await ImagePicker().pickMedia();
     if(await isNetworkAvailable()){
       try {
       state= const LoadingState();
       String imageUrl = "";
       // final String hl = await ref!.read(getUserProvider.future);
-      final userdata = await ref!.read(loginProvider.notifier).getUserData();
+      // final userdata = await ref!.read(loginProvider.notifier).getUserData();
      
         if (image != null) {
             imageUrl = await uploadProfileToFirebaseStorage(image);

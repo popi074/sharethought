@@ -25,7 +25,7 @@ class KSmallButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(4.0)
         ),
       
-       child:  Text(text,style:ktextStyle.smallText(Kcolor.white))),
+       child:  Text(text,style:ktextStyle.smallText..copyWith(color: Colors.white..withOpacity(.5)))),
     );
   }
 }

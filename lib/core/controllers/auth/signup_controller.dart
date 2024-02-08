@@ -64,7 +64,7 @@ class SignUpController extends StateNotifier<BaseState> {
             print("Sign Up Successfully Complete");
 
             // this toast get from nb_utils package
-            toast("Sign Up Successfull!", bgColor: Kcolor.baseGrey);
+            toast("Sign Up Successfull!");
             NavigatorService.navigateToRouteName(RouteGenerator.login);
           }).catchError((e) {
              toast("Something Went Wrong!");

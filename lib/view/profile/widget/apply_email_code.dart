@@ -7,20 +7,20 @@ import 'package:sharethought/common_widget/loading/k_circularloading.dart';
 import 'package:sharethought/core/base_state/base_state.dart';
 import 'package:sharethought/core/controllers/auth/verify_email_controller.dart';
 import 'package:sharethought/route/route_generator.dart';
+import 'package:sharethought/styles/ktext_style.dart';
 
 import '../../../common_widget/common_app_bar.dart';
 import '../../../common_widget/full_width_button.dart';
 
-class AddEmail extends StatefulWidget {
-  final String username; 
-  final String userId; 
-  const AddEmail({Key? key, required this.username, required this.userId}) : super(key: key);
+class ApplyEmailCode extends StatefulWidget {
+  final String verficatoinCode; 
+  const ApplyEmailCode({Key? key, required this.verficatoinCode, }) : super(key: key);
 
   @override
-  _AddEmailState createState() => _AddEmailState();
+  _ApplyEmailCodeState createState() => _ApplyEmailCodeState();
 }
 
-class _AddEmailState extends State<AddEmail> {
+class _ApplyEmailCodeState extends State<ApplyEmailCode> {
   final TextEditingController _emailCon = TextEditingController();
   final TextEditingController _passwordCon = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -37,27 +37,25 @@ class _AddEmailState extends State<AddEmail> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const Text("Verification code has been sent in your email.",style: ktextStyle.font18,), 
+              const SizedBox(height: 20,), 
               KInputField(
-                hintText: "New Email",
+                hintText: "Enter code",
                 icon: const Icon(Icons.email_outlined),
                 controller: _emailCon,
                 isEmail: true,
+                onlyNumber: true, 
               ),
               const SizedBox(
                 height: 15,
               ),
-              KInputField(
-                hintText: "Put your account password",
-                icon: const Icon(Icons.password_outlined),
-                controller: _passwordCon,
-                isObscure: true,
-              ),
+       
             
               const SizedBox(height: 30),
               if (emailProvider is LoadingState) ...{const KcircularLoading()},
               if (emailProvider is! LoadingState) ...{
                 FullWidthButton(
-                  text: "Get Code",
+                  text: "Update Email",
                   onTap: () {
                     if (_formKey.currentState?.validate() ?? false) {
                       // if (emailProvider !is LoadingState) {
@@ -67,11 +65,11 @@ class _AddEmailState extends State<AddEmail> {
                       //       username: widget.username,
                       //       password: _passwordCon.text);
                       // }
-                       ref.read(verifyEmailProvier.notifier).addEmail(
-                            userId: widget.userId, 
-                            email: _emailCon.text,
-                            username: widget.username,
-                            password: _passwordCon.text);
+                      //  ref.read(verifyEmailProvier.notifier).addEmail(
+                      //       userId: widget.userId, 
+                      //       email: _emailCon.text,
+                      //       username: widget.username,
+                      //       password: _passwordCon.text);
                     }
 
                     // Use the _controller as needed

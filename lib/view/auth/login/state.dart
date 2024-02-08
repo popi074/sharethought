@@ -10,3 +10,5 @@ class LoginSuccessState extends SuccessState{
     final UserModel? usermodel; 
    LoginSuccessState(this.usermodel); 
 }
+class LogoutSuccessState extends SuccessState{
+}

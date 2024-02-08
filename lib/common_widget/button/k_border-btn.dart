@@ -22,7 +22,7 @@ class KBorderButton extends StatelessWidget {
         child: Center(
           child: Text(
             '$title',
-            style: ktextStyle.font18( Kcolor.blackbg)
+            style: ktextStyle.font18..copyWith(color: Colors.black..withOpacity(.5))
           ),
         ),
       ),

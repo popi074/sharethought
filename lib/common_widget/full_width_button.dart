@@ -28,7 +28,7 @@ class FullWidthButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.0)
         ),
       
-       child:  Text(text,style:ktextStyle.mediumText(Kcolor.white))),
+       child:  Text(text,style:ktextStyle.mediumText.copyWith(color: Colors.white))),
     );
   }
 }

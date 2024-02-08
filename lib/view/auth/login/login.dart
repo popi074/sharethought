@@ -2,22 +2,25 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharethought/common_widget/full_width_button.dart';
+import 'package:sharethought/core/base_state/base_state.dart';
 import 'package:sharethought/styles/kcolor.dart';
 import 'package:sharethought/styles/ksize.dart';
 import 'package:sharethought/styles/ktext_style.dart';
 
+import '../../../common_widget/dialog/dialog_helper.dart';
 import '../../../common_widget/kinput_field.dart';
 import '../../../common_widget/ksmall_button.dart';
+import '../../../common_widget/loading/k_circularloading.dart';
 import '../../../core/controllers/auth/login_controller.dart';
 
-class Login extends StatefulWidget {
+class Login extends ConsumerStatefulWidget {
   const Login({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  ConsumerState<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
+class _LoginState extends ConsumerState<Login> with SingleTickerProviderStateMixin {
   final TextEditingController usernameCon = TextEditingController();
   final TextEditingController passwordCon = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -32,11 +35,9 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * .6;
+      final loginState=  ref.watch(loginProvider);
     return Scaffold(
-        body: Consumer(
-          builder: (context,ref, _) {
-           final loginState=  ref.watch(loginProvider);
-            return SingleChildScrollView(
+        body:  SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Padding(
                   padding:const EdgeInsets.only(left: 20, right: 20),
@@ -47,11 +48,11 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                       children: [
                         Padding(
                             padding:
-                                EdgeInsets.only(top: Ksize.getWidth(context, 120))),
+                                EdgeInsets.only(top: Ksize.getWidth(context, 80))),
                         Text(
-                          "Pick your username and start sharing now",
-                          textAlign: TextAlign.left,
-                          style: ktextStyle.headline(Kcolor.deleteColor),
+                          "Welcome to Sharethought",
+                          textAlign: TextAlign.center,
+                          style: ktextStyle.headline.copyWith(color:Kcolor.secondary.withOpacity(1)),
                         ),
                         Padding(
                             padding:
@@ -73,27 +74,42 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                         SizedBox(
                           height: Ksize.getHeight(context, 30),
                         ),
-                        FullWidthButton(
+                        if(loginState is LoadingState)...{
+                         const KcircularLoading()
+                        }, 
+                        if(loginState is! LoadingState)...{
+                           FullWidthButton(
                             text: "Login",
                             onTap: () {
-                              if (formKey.currentState?.validate() ?? false) {
-                                ref.read(loginProvider.notifier).login(username: usernameCon.text, password: passwordCon.text);
+                              
+                              if (formKey.currentState?.validate() ?? false ) {
+                                if(loginState is! LoadingState){
+                                  ref.read(loginProvider.notifier).login(username: usernameCon.text, password: passwordCon.text);
+                                }
+                                // if(loginState is LoadingState){
+                                //   Dialogs.showProgressBar(context,);
+                                // }
+                                
                               }
                               print("controller data");
                               print(usernameCon.text);
                               print(passwordCon.text);
                             }),
+                        }
+                       ,
                         SizedBox(
                           height: Ksize.getHeight(context, 20),
                         ),
+                  
                         RichText(
                           text: TextSpan(children: [
                             TextSpan(
                                 text: "You Don't have any account?",
-                                style: ktextStyle.mediumText(Kcolor.black)),
+                                style: ktextStyle.mediumText.copyWith(color: Colors.black)),
                             TextSpan(
                                 text: " Sign Up",
-                                style: ktextStyle.mediumText(Kcolor.filterColorTwo),
+                                // style: TextStyle(color:Colors.black), 
+                                style: ktextStyle.mediumText.copyWith(color: Colors.black),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Navigator.pushNamed(context, "/signup");
@@ -103,9 +119,9 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                       ],
                     ),
                   ),
-                ));
-          }
-        ));
+                ))
+      
+        );
   }
 }
 

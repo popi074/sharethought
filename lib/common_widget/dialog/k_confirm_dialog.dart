@@ -31,13 +31,13 @@ class KConfirmDialog extends StatelessWidget {
               children: [
                 Text(
                   '$message',
-                  style: ktextStyle.font18(Kcolor.blackbg), 
+                  style: ktextStyle.font18..copyWith(color: Colors.black..withOpacity(.6)), 
                   // style: KtextStyle.copyWith(color: .blackbg),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   '$subMessage',
-                  style: ktextStyle.font20(Kcolor.blackbg..withOpacity(0.6))
+                  style: ktextStyle.font20..copyWith(color: Colors.black..withOpacity(.6))
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 Row(

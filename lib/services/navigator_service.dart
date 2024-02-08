@@ -11,8 +11,8 @@ class NavigatorService{
     return navigatorKey.currentState!.pushReplacement(route); 
   }
 
-  static Future<dynamic> navigateToRouteName(String routeName){
-    return navigatorKey.currentState!.pushNamed(routeName); 
+  static Future<dynamic> navigateToRouteName(String routeName,{Object? arguments}){
+    return navigatorKey.currentState!.pushNamed(routeName,arguments: arguments); 
   }
   static Future<dynamic> navigateAndRemoveUntil(Route route){
     return navigatorKey.currentState!.pushAndRemoveUntil(route, (Route<dynamic> route) => false); 

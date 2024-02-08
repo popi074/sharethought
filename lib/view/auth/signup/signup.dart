@@ -11,6 +11,7 @@ import 'package:sharethought/styles/ktext_style.dart';
 
 import '../../../common_widget/kinput_field.dart';
 import '../../../common_widget/ksmall_button.dart';
+import '../../../common_widget/loading/k_circularloading.dart';
 import '../../../constants/value_constant.dart';
 import '../../../core/controllers/auth/signup_controller.dart';
 import '../../../core/network/database_constant.dart';
@@ -46,7 +47,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                     Text(
                       "Pick your username and start sharing now",
                       textAlign: TextAlign.left,
-                      style: ktextStyle.headline(Kcolor.deleteColor),
+                      style: ktextStyle.headline.copyWith(color: Colors.red..withOpacity(.7)),
                     ),
                     Padding(
                         padding:
@@ -73,8 +74,8 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                           ref.watch(signUpControllerProvider);
                       final isSetUsername =
                           ref.watch(usernameAvailabilityProvider);
-
-                      return FullWidthButton(
+                      
+                      return signupProvider is LoadingState?const KcircularLoading():  FullWidthButton(
                           text: signupProvider is LoadingState
                               ? "Loading..."
                               : "Sign Up",
@@ -96,10 +97,10 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                       text: TextSpan(children: [
                         TextSpan(
                             text: "Allready have an account?",
-                            style: ktextStyle.mediumText(Kcolor.black)),
+                            style: ktextStyle.mediumText.copyWith(color: Colors.black..withOpacity(.6))),
                         TextSpan(
                             text: " Login",
-                            style: ktextStyle.mediumText(Kcolor.filterColorTwo),
+                            style: ktextStyle.mediumText.copyWith(color: Colors.blueAccent),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 Navigator.pushNamed(context, "/login");
@@ -122,7 +123,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
             controller: usernameCon,
             onChange: (value) async {
               // Check username availability in real-time
-              if (value.isNotEmpty) {
+              if (value.trim().isNotEmpty && usernameCon.text.trim().isNotEmpty) {
                 Future.delayed(Duration(microseconds: 1000), () {
                   ref.read(usernameControllerProvider).text = value;
                   ref.refresh(usernameAvailabilityProvider);
