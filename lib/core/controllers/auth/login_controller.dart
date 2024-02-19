@@ -51,11 +51,12 @@ class LoginController extends StateNotifier<BaseState> {
             state =
                 LoginSuccessState(UserModel.formSnap(querySnapshot.docs[0]));
                  toast("Login Successfull!");
-                 NavigatorService.navigateToReplacement(
-            CupertinoPageRoute(
-              builder: (context) => HomePage(),
-            ),
-          );
+          //        NavigatorService.navigateToReplacement(
+          //   CupertinoPageRoute(
+          //     builder: (context) => HomePage(),
+          //   ),
+          // );
+                 NavigatorService.navigateTopushReplacementNamed(RouteGenerator.home);
             // NavigatorService.navigateToReplacement(RouteGenerator.home);
           } else {
             state = LoginErrorState("Password not correct!");

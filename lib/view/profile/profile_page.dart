@@ -26,7 +26,7 @@ import '../../model/post_model.dart';
 import '../../route/route_generator.dart';
 
 class Profile_Page extends StatefulWidget {
-  Profile_Page({super.key});
+  const Profile_Page({super.key});
 
   @override
   State<Profile_Page> createState() => _Profile_PageState();

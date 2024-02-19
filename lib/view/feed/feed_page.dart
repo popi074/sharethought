@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharethought/core/controllers/auth/model/usermodel.dart';
@@ -23,7 +24,25 @@ class FeedPage extends ConsumerStatefulWidget {
   ConsumerState<FeedPage> createState() => FeedPageState();
 }
 
-class FeedPageState extends ConsumerState<FeedPage> {
+class FeedPageState extends ConsumerState<FeedPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(seconds: 5), // Set your desired duration
+      vsync: this,
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(loginProvider);
@@ -31,18 +50,28 @@ class FeedPageState extends ConsumerState<FeedPage> {
         userState is LoginSuccessState ? userState.usermodel : null;
     final feedData = ref.watch(feedDataProvider);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 235, 235, 235),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        // title:  Text("Sharethought",style: ktextStyle.font20.copyWith(color: Kcolor.secondary),),
-       
-       title: Hero(
-    tag: 'feedPageTitle', // Same tag as in the source page
-    child: Text("Sharethought", style: ktextStyle.font20.copyWith(color: Kcolor.secondary)),
-  ),
-       
+        title: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Text(
+              'Sharethought',
+              style: TextStyle(
+                fontSize: 20.0,
+                letterSpacing: 1.5,
+                fontWeight: FontWeight.bold,
+                color: ColorTween(
+                  begin: Kcolor.secondary,
+                  end: Colors.black,
+                ).evaluate(_controller),
+              ),
+            );
+          },
+        ),
         automaticallyImplyLeading: false,
         elevation: 0.0,
-        backgroundColor: Kcolor.white,
+        backgroundColor: Color.fromARGB(255, 255, 253, 253),
         // backgroundColor: const Color.fromARGB(255, 247, 107, 174),
         foregroundColor: Kcolor.baseBlack,
         actions: [
@@ -61,7 +90,7 @@ class FeedPageState extends ConsumerState<FeedPage> {
                 child: Stack(
                   children: [
                     Image.asset("assets/images/messenger.png",
-                      width: 30, height: 30),
+                        width: 30, height: 30),
                     // Icon(Icons.message_outlined,
                     //     size: 30, color: Kcolor.grey350),
                     // Positioned(

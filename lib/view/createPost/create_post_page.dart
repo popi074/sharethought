@@ -7,10 +7,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:sharethought/common_widget/loading/k_circularloading.dart';
 import 'package:sharethought/core/base_state/base_state.dart';
+import 'package:sharethought/core/controllers/auth/login_controller.dart';
+import 'package:sharethought/core/controllers/auth/model/usermodel.dart';
 import 'package:sharethought/core/controllers/create_post/create_post_controller.dart';
+import 'package:sharethought/core/network/database_constant.dart';
 import 'package:sharethought/styles/kcolor.dart';
 import 'package:sharethought/styles/ktext_style.dart';
+import 'package:sharethought/view/auth/login/login.dart';
+import 'package:sharethought/view/auth/login/state.dart';
 import 'package:sharethought/view/createPost/state.dart';
 
 import '../../common_widget/loading/loading_text_btn.dart';
@@ -55,6 +61,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
         postTextCon.clear();
         //  ref.read(createPostProvider.notifier).resetState();
       }
+      final userState = ref.watch(loginProvider);
+      final userData =
+          userState is LoginSuccessState ? userState.usermodel : null;
 
       return Scaffold(
           backgroundColor: Kcolor.white,
@@ -70,7 +79,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
             actions: [
               postButtom(postProvider, ref, () async {
                 print("button pressed");
-                if (postProvider is! LoadingState) {
+                if (postProvider is! LoadingState && userData != null) {
                   print("button pressed if");
                   await ref
                       .read(createPostProvider.notifier)
@@ -82,22 +91,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
               })
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-            child: CustomScrollView(
-              slivers: [
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    profilePicAndNameRow(),
-                    _buildTextField(width, height),
-                    const SizedBox(height: 20),
-                    kUploadIcon(),
-                  ]),
-                ),
-                imgeGridViewList()
-              ],
-            ),
-          ));
+          body: userData == null
+              ? const  KcircularLoading()
+              : Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: SliverChildListDelegate([
+                          profilePicAndNameRow(userData),
+                          _buildTextField(width, height),
+                          const SizedBox(height: 20),
+                          kUploadIcon(),
+                        ]),
+                      ),
+                      imgeGridViewList()
+                    ],
+                  ),
+                ));
     });
   }
 
@@ -138,17 +149,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ? const LoadingTextBtn()
               : Text(
                   "post",
-                  style: ktextStyle.buttonText20.copyWith(color:Colors.white),
+                  style: ktextStyle.buttonText20.copyWith(color: Colors.white),
                 ),
         ));
   }
 
-  Widget profilePicAndNameRow() {
+  Widget profilePicAndNameRow(UserModel userData) {
     return ListTile(
-      leading: CircleAvatar(
-          radius: 30.0, child: Image.asset("assets/images/profilepic.png")),
+      leading: userData.photourl.isNotEmpty
+          ? CircleAvatar(
+              radius: 18.0,
+              backgroundImage: NetworkImage(userData.photourl),
+              // backgroundColor: Colors.black,
+            )
+          : const CircleAvatar(
+              radius: 18.0,
+              backgroundImage: AssetImage(DatabaseConst.personavater),
+              // backgroundColor: Colors.black,
+            ),
+      // leading: CircleAvatar(
+      //     radius: 30.0, child: Image.asset("assets/images/profilepic.png")),
       title: Text(
-        "Shinna",
+        userData.username,
         style: ktextStyle.font20
           ..copyWith()
           ..copyWith(color: Colors.black..withOpacity(.5)),
