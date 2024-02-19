@@ -31,9 +31,9 @@ class FeedPageState extends ConsumerState<FeedPage>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(seconds: 5), // Set your desired duration
+      duration: const Duration(seconds: 4), // Set your desired duration
       vsync: this,
-    )..repeat();
+    )..repeat(reverse: true);
   }
 
   @override
@@ -55,16 +55,19 @@ class FeedPageState extends ConsumerState<FeedPage>
         title: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
-            return Text(
-              'Sharethought',
-              style: TextStyle(
-                fontSize: 20.0,
-                letterSpacing: 1.5,
-                fontWeight: FontWeight.bold,
-                color: ColorTween(
-                  begin: Kcolor.secondary,
-                  end: Colors.black,
-                ).evaluate(_controller),
+            return Opacity(
+              opacity: Curves.easeInOut.transform(_controller.value),
+              child: Text(
+                'Sharethought',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  letterSpacing: 1.5,
+                  fontWeight: FontWeight.bold,
+                  color: ColorTween(
+                    begin: Kcolor.secondary,
+                    end: Kcolor.secondary,
+                  ).evaluate(_controller),
+                ),
               ),
             );
           },
